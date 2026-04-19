@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giải Phương Trình Bậc 2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .equation-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-solve {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-solve:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-reset {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-reset:hover {
+            background: #e0e0e0;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .step {
+            margin-bottom: 15px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .step strong {
+            color: #764ba2;
+        }
+
+        .answer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .instruction {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #856404;
+        }
+
+        .instruction strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧮 Giải Phương Trình Bậc 2</h1>
+        <p class="subtitle">ax² + bx + c = 0</p>
+
+        <div class="instruction">
+            <strong>📝 Hướng dẫn:</strong>
+            Nhập các hệ số a, b, c của phương trình (a ≠ 0 cho phương trình bậc 2)
+        </div>
+
+        <div class="equation-display">
+            <span id="displayEquation">ax² + bx + c = 0</span>
+        </div>
+
+        <div class="input-group">
+            <label for="coeffA">Hệ số a (x²):</label>
+            <input type="number" id="coeffA" step="any" placeholder="Nhập hệ số a" value="1">
+        </div>
+
+        <div class="input-group">
+            <label for="coeffB">Hệ số b (x):</label>
+            <input type="number" id="coeffB" step="any" placeholder="Nhập hệ số b" value="0">
+        </div>
+
+        <div class="input-group">
+            <label for="coeffC">Hệ số c:</label>
+            <input type="number" id="coeffC" step="any" placeholder="Nhập hệ số c" value="-4">
+        </div>
+
+        <div class="button-group">
+            <button class="btn-solve" onclick="solveEquation()">🔍 Giải phương trình</button>
+            <button class="btn-reset" onclick="resetForm()">🔄 Làm mới</button>
+        </div>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        // Cập nhật hiển thị phương trình khi nhập
+        document.getElementById('coeffA').addEventListener('input', updateEquationDisplay);
+        document.getElementById('coeffB').addEventListener('input', updateEquationDisplay);
+        document.getElementById('coeffC').addEventListener('input', updateEquationDisplay);
+
+        function updateEquationDisplay() {
+            const a = parseFloat(document.getElementById('coeffA').value) || 0;
+            const b = parseFloat(document.getElementById('coeffB').value) || 0;
+            const c = parseFloat(document.getElementById('coeffC').value) || 0;
+
+            let equation = '';
+            
+            // Phần a
+            if (a !== 0) {
+                if (a === 1) equation += 'x²';
+                else if (a === -1) equation += '-x²';
+                else equation += a + 'x²';
+            }
+
+            // Phần b
+            if (b !== 0) {
+                if (equation) {
+                    if (b > 0) equation += ' + ';
+                    else equation += ' - ';
+                }
+                const absB = Math.abs(b);
+                if (absB === 1) equation += (equation ? '' : (b < 0 ? '-' : '')) + 'x';
+                else equation += (equation ? absB : b) + 'x';
+            }
+
+            // Phần c
+            if (c !== 0) {
+                if (equation) {
+                    if (c > 0) equation += ' + ';
+                    else equation += ' - ';
+                    equation += Math.abs(c);
+                } else {
+                    equation += c;
+                }
+            }
+
+            if (!equation) equation = '0';
+            equation += ' = 0';
+
+            document.getElementById('displayEquation').textContent = equation;
+        }
+
+        function solveEquation() {
+            const a = parseFloat(document.getElementById('coeffA').value);
+            const b = parseFloat(document.getElementById('coeffB').value);
+            const c = parseFloat(document.getElementById('coeffC').value);
+
+            if (isNaN(a) || isNaN(b) || isNaN(c)) {
+                showResult('<div class="step" style="color: red;">❌ Vui lòng nhập đầy đủ các hệ số!</div>');
+                return;
+            }
+
+            let resultHTML = '<h3>📊 Lời giải chi tiết:</h3>';
+
+            // Trường hợp a = 0 (không phải phương trình bậc 2)
+            if (a === 0) {
+                if (b === 0) {
+                    if (c === 0) {
+                        resultHTML += '<div class="step">Phương trình có dạng: 0 = 0</div>';
+                        resultHTML += '<div class="answer">✅ Phương trình có vô số nghiệm</div>';
+                    } else {
+                        resultHTML += '<div class="step">Phương trình có dạng: ' + c + ' = 0</div>';
+                        resultHTML += '<div class="answer">❌ Phương trình vô nghiệm</div>';
+                    }
+                } else {
+                    resultHTML += '<div class="step">Đây là phương trình bậc nhất: ' + b + 'x + ' + c + ' = 0</div>';
+                    const x = -c / b;
+                    resultHTML += '<div class="step"><strong>Bước 1:</strong> ' + b + 'x = ' + (-c) + '</div>';
+                    resultHTML += '<div class="step"><strong>Bước 2:</strong> x = ' + (-c) + ' ÷ ' + b + '</div>';
+                    resultHTML += '<div class="answer">✅ Nghiệm: x = ' + x.toFixed(4) + '</div>';
+                }
+                showResult(resultHTML);
+                return;
+            }
+
+            // Giải phương trình bậc 2
+            resultHTML += '<div class="step">Phương trình: ' + a + 'x² + ' + b + 'x + ' + c + ' = 0</div>';
+            
+            const delta = b * b - 4 * a * c;
+            resultHTML += '<div class="step"><strong>Bước 1:</strong> Tính Delta (Δ)</div>';
+            resultHTML += '<div class="step">Δ = b² - 4ac = (' + b + ')² - 4×(' + a + ')×(' + c + ')</div>';
+            resultHTML += '<div class="step">Δ = ' + (b * b) + ' - ' + (4 * a * c) + ' = ' + delta + '</div>';
+
+            if (delta > 0) {
+                resultHTML += '<div class="step"><strong>Bước 2:</strong> Δ > 0 → Phương trình có 2 nghiệm phân biệt</div>';
+                const sqrtDelta = Math.sqrt(delta);
+                const x1 = (-b + sqrtDelta) / (2 * a);
+                const x2 = (-b - sqrtDelta) / (2 * a);
+                
+                resultHTML += '<div class="step">√Δ = ' + sqrtDelta.toFixed(4) + '</div>';
+                resultHTML += '<div class="step">x₁ = (-b + √Δ) / (2a) = (' + (-b) + ' + ' + sqrtDelta.toFixed(4) + ') / ' + (2 * a) + ' = ' + x1.toFixed(4) + '</div>';
+                resultHTML += '<div class="step">x₂ = (-b - √Δ) / (2a) = (' + (-b) + ' - ' + sqrtDelta.toFixed(4) + ') / ' + (2 * a) + ' = ' + x2.toFixed(4) + '</div>';
+                resultHTML += '<div class="answer">✅ Nghiệm: x₁ = ' + x1.toFixed(4) + ' và x₂ = ' + x2.toFixed(4) + '</div>';
+            } else if (delta === 0) {
+                resultHTML += '<div class="step"><strong>Bước 2:</strong> Δ = 0 → Phương trình có nghiệm kép</div>';
+                const x = -b / (2 * a);
+                resultHTML += '<div class="step">x = -b / (2a) = ' + (-b) + ' / ' + (2 * a) + ' = ' + x.toFixed(4) + '</div>';
+                resultHTML += '<div class="answer">✅ Nghiệm kép: x₁ = x₂ = ' + x.toFixed(4) + '</div>';
+            } else {
+                resultHTML += '<div class="step"><strong>Bước 2:</strong> Δ < 0 → Phương trình có 2 nghiệm phức</div>';
+                const sqrtAbsDelta = Math.sqrt(Math.abs(delta));
+                const realPart = -b / (2 * a);
+                const imagPart = sqrtAbsDelta / (2 * a);
+                
+                resultHTML += '<div class="step">√|Δ| = ' + sqrtAbsDelta.toFixed(4) + '</div>';
+                resultHTML += '<div class="step">Phần thực: -b / (2a) = ' + realPart.toFixed(4) + '</div>';
+                resultHTML += '<div class="step">Phần ảo: √|Δ| / (2a) = ±' + imagPart.toFixed(4) + 'i</div>';
+                resultHTML += '<div class="answer">✅ Nghiệm phức:<br>';
+                resultHTML += 'x₁ = ' + realPart.toFixed(4) + ' + ' + imagPart.toFixed(4) + 'i<br>';
+                resultHTML += 'x₂ = ' + realPart.toFixed(4) + ' - ' + imagPart.toFixed(4) + 'i</div>';
+            }
+
+            showResult(resultHTML);
+        }
+
+        function showResult(html) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = html;
+            resultDiv.classList.add('show');
+        }
+
+        function resetForm() {
+            document.getElementById('coeffA').value = '1';
+            document.getElementById('coeffB').value = '0';
+            document.getElementById('coeffC').value = '-4';
+            document.getElementById('result').classList.remove('show');
+            updateEquationDisplay();
+        }
+
+        // Khởi tạo hiển thị ban đầu
+        updateEquationDisplay();
+
+        // Enter để giải
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                solveEquation();
+            }
+        });
+    </script>
+</body>
+</html>
